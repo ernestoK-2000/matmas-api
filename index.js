@@ -15,6 +15,8 @@ const client = new Client({
 });
 
 client.connect();
+// connection example with heroku pg
+// https://devcenter.heroku.com/articles/connecting-heroku-postgres
 
 client.query('Select * from users', (err, res) => {
     if(!err){
@@ -25,22 +27,22 @@ client.query('Select * from users', (err, res) => {
     client.end;
 })
 
-    console.log(express);
-    const app = express();
+console.log(express);
+const app = express();
 
-    app.use(express.json());
-    const PORT = process.env.PORT || 8080;
+app.use(express.json());
+const PORT = process.env.PORT || 8080;
 
-    let sponsors = [
-        {id: 1, images: ['https://static.wikia.nocookie.net/starcraft/images/d/d2/Artanis_SC2-LotV_Portrait.jpg/revision/latest/scale-to-width-down/150?cb=20160104065255']},
-        {id: 2, images: ['https://oyster.ignimgs.com/mediawiki/apis.ign.com/starcraft-2/e/e4/500full.jpg']},
-        {id: 3, images: ['http://cdn.pastemagazine.com/www/articles/starcraft_james_raynor.jpg']}
-    ]
+let sponsors = [
+    {id: 1, images: ['https://static.wikia.nocookie.net/starcraft/images/d/d2/Artanis_SC2-LotV_Portrait.jpg/revision/latest/scale-to-width-down/150?cb=20160104065255']},
+    {id: 2, images: ['https://oyster.ignimgs.com/mediawiki/apis.ign.com/starcraft-2/e/e4/500full.jpg']},
+    {id: 3, images: ['http://cdn.pastemagazine.com/www/articles/starcraft_james_raynor.jpg']}
+]
 
-    app.listen(
-        PORT,
-        () => console.log(`it's alive on http://localhost:${PORT}`)
-    )
+app.listen(
+    PORT,
+    () => console.log(`it's alive on http://localhost:${PORT}`)
+)
 
 app.get('/api/sponsors', (req, res) => {
     res.status(200).send({
@@ -50,7 +52,14 @@ app.get('/api/sponsors', (req, res) => {
 })
 
 app.get('/api', (req, res) => {
-    res.send('<h2>Hello World!!!!</h2>');
+    client.query('Select * from users', (err, resDb) => {
+        if(!err){
+            res.send(resDb.rows);
+        }else{
+            res.send(err.message);
+        }
+        client.end;
+    })
 });
 
 app.get('/api/sponsors/:id', (req, res) => {
