@@ -1,5 +1,29 @@
+const {Client} = require('pg')
 const express = require('express')
 
+const client = new Client({
+    /*host: "ec2-23-20-224-166.compute-1.amazonaws.com",
+    user: "gudwsehgvqegqb",
+    port: 5432,
+    password: "8a8a5f8dd49b213912262f3dbc3acea0ee96d01956c9686d03e86e1f1d9a75e0",
+    database: "d2ad98r0i0sk2i",
+    ssl*/
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+
+client.connect();
+
+client.query('Select * from users', (err, res) => {
+    if(!err){
+        console.log(res.rows);
+    }else{
+        console.log(err.message);
+    }
+    client.end;
+})
 
     console.log(express);
     const app = express();
@@ -26,7 +50,7 @@ app.get('/api/sponsors', (req, res) => {
 })
 
 app.get('/api', (req, res) => {
-    res.send('Hello World!!!!');
+    res.send('<h2>Hello World!!!!</h2>');
 });
 
 app.get('/api/sponsors/:id', (req, res) => {
